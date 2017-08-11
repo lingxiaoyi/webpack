@@ -5,23 +5,34 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: {
-        app: './src/index.js'
+        main: './src/index.js',
+         vendor: [
+           'lodash'
+        ]
     },
     devtool: 'inline-source-map',
-    devServer: {
+    /*devServer: {
         hot: true, // 告诉 dev-server 我们在使用 HMR
         contentBase: path.resolve(__dirname, 'dist'),
         publicPath: '/'
-    },
+    },*/
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
-        /*new CleanWebpackPlugin(['dist']),*/
+        //new webpack.HotModuleReplacementPlugin(),
+        new CleanWebpackPlugin(['dist']),
         new HtmlWebpackPlugin({
-            title: 'Output Management'
+            title: 'Caching'
+        }),
+        new webpack.HashedModuleIdsPlugin(),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor'
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'runtime'
         })
     ],
     output: {
-        filename: '[name].bundle.js',
+        //filename: '[name].bundle.js',
+        filename: '[name].[chunkhash].js',
         path: path.resolve(__dirname, 'dist')
     },
     module: {
@@ -58,3 +69,19 @@ module.exports = {
         ]
     }
 };
+/*
+module.exports = {
+    entry: {
+        index: './src/index.js'
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: 'Code Splitting'
+        })
+    ],
+    output: {
+        filename: '[name].bundle.js',
+        chunkFilename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    }
+};*/
